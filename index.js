@@ -1,6 +1,9 @@
 //Backend server to manage cinema - uses Subscription WS + Users.json, Permissions.json + users DB
 //Routers import
 const usersRouter = require("./routes/usersRouter")
+const moviesRouter = require("./routes/moviesRouter")
+const membersRouter = require("./routes/membersRouter")
+const subscriptionsRouter = require("./routes/subscriptionsRouter")
 //npm requires
 const cookieparser = require("cookie-parser")
 const express = require("express")
@@ -16,7 +19,10 @@ app.use(express.json())
 app.use(cookieparser())
 
 //Routers
-app.use("users", usersRouter)
+app.use("/users", usersRouter)
+app.use("/movies", moviesRouter)
+app.use("/members", membersRouter)
+app.use("/subscriptions", subscriptionsRouter)
 
 //connection
 app.listen(port, () => {
