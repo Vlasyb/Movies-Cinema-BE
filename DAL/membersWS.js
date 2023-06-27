@@ -6,6 +6,12 @@ const getAllMembers = () => {
 	return axios.get(url)
 }
 
+//change from movie
+const getMemberById = (id) => {
+	return axios.get(`${url}/movie/${id}`)
+}
+
 module.exports = {
+	getMemberById,
 	getAllMembers,
 }
