@@ -14,4 +14,14 @@ router.post("/signuser", async (req, res) => {
 	}
 })
 
+router.get("/", async (req, res) => {
+	try {
+		const users = await usersBLL.getAllUsers()
+		res.json(users)
+	} catch (error) {
+		console.log("error ", error)
+		return res.status(500).send(error.message)
+	}
+})
+
 module.exports = router

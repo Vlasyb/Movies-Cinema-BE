@@ -1,1 +1,24 @@
-{"users":[{"id":"649c7b242a543e84ccd4c438","permissions":[]},{"id":"649c7b2c4b2f1ecdac7fb9e2","permissions":[]},{"id":"649c7bd71cc01da888b177f3","permissions":[]},{"id":"649c7c5fa8fa6d503d94383c","permissions":[]},{"id":"649c7c70bc1c15fd796fee2a","permissions":[]}]}
+{
+  "users": [
+    {
+      "id": "649c7b242a543e84ccd4c438",
+      "permissions": []
+    },
+    {
+      "id": "649c7b2c4b2f1ecdac7fb9e2",
+      "permissions": ["view movies", "create movies"]
+    },
+    {
+      "id": "649c7bd71cc01da888b177f3",
+      "permissions": []
+    },
+    {
+      "id": "649c7c5fa8fa6d503d94383c",
+      "permissions": []
+    },
+    {
+      "id": "649c7c70bc1c15fd796fee2a",
+      "permissions": []
+    }
+  ]
+}

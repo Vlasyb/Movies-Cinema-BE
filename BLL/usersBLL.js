@@ -40,6 +40,31 @@ const createUser = async (obj) => {
 	return "Created"
 }
 
+const getAllUsers = async () => {
+	const usersDB = await User.find({ isAdmin: false })
+	const usersPermissionsObject = await usersPermissionsFile.getPermissions()
+	const usersObject = await usersFile.getUsers()
+	let usersResult = []
+	usersResult = usersDB.map((user) => {
+		const fileUser = usersObject.users.find((userfl) => user.id == userfl.id)
+		const permissionsUser = usersPermissionsObject.users.find(
+			(userfl) => user.id == userfl.id
+		)
+
+		const combinedUser = {
+			username: user.username,
+			firstName: fileUser.firstName,
+			lastName: fileUser.lastName,
+			sessionTimeOut: fileUser.sessionTimeOut,
+			createdDate: fileUser.createdDate,
+			permissions: permissionsUser,
+		}
+		return combinedUser
+	})
+
+	return usersResult
+}
+
 const todaysDateAsString = () => {
 	const today = new Date()
 	const day = today.getDate().toString().padStart(2, "0")
@@ -50,5 +75,6 @@ const todaysDateAsString = () => {
 }
 
 module.exports = {
+	getAllUsers,
 	createUser,
 }
