@@ -5,6 +5,9 @@ const usersPermissionsFile = require("../DAL/usersPermissionsFile")
 //maybe need to add signToken inside
 const createUser = async (obj) => {
 	const username = obj.username
+	if (username === "" || username.length < 3) {
+		return "Username is a required field, and needs to have at least 3 characters"
+	}
 	// let user = await User.findOne({ username })
 	let user = await User.findOne({ username: new RegExp(`^${username}$`, "i") })
 
@@ -18,14 +21,14 @@ const createUser = async (obj) => {
 
 	const newPermissionsObj = {
 		id: userId,
-		permissions: [],
+		permissions: obj.permissions ? obj.permissions : [],
 	}
 	const newUserObj = {
 		id: userId,
-		firstName: "",
-		lastName: "",
+		firstName: obj.firstName ? obj.firstName : "",
+		lastName: obj.lastName ? obj.lastName : "",
 		createdDate: todaysDateAsString(),
-		sessionTimeOut: 0, //0 means not set
+		sessionTimeOut: obj.sessionTimeOut ? obj.sessionTimeOut : 0, //0 means not set
 	}
 
 	// Retrieve the existing actions from the JSON file and add the new action
