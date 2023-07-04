@@ -1,7 +1,57 @@
 const User = require("../models/userModel")
 const usersFile = require("../DAL/usersFile")
 const usersPermissionsFile = require("../DAL/usersPermissionsFile")
-// require("dotenv").config()
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
+const bcrypt = require("bcrypt")
+
+//edit maxAge to sessionTimeOut,json user and req.body.user
+const login = async (req, res) => {
+	//after user is authenticated
+
+	const user = req.body.user
+
+	const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+		expiresIn: "2h",
+	})
+	res.cookie("token", accessToken, {
+		maxAge: 1800000,
+		httpOnly: true,
+	})
+	res.status(200).json({
+		message: "successfully logged in",
+		accessToken: accessToken,
+		user,
+	})
+}
+
+const logout = async (req, res) => {
+	res.cookie("token", "none", {
+		maxAge: 0,
+		httpOnly: true,
+	}),
+		res.status(200).json({ message: "User logged out successfully" })
+}
+
+//sign password?
+const createExistingUser = async (obj) => {
+	let user = await User.findOne({
+		username: new RegExp(`^${obj.username}$`, "i"),
+	})
+	if (obj.username === "" || obj.username == null) {
+		return "Username is a required field"
+	}
+	if (obj.password === "" || obj.password == null) {
+		return "must provide password"
+	}
+	if (!user) {
+		return `No username matching ${obj.username} , ask admin for sign`
+	}
+	const hashedPass = await bcrypt.hash(obj.password, 10)
+
+	await User.findByIdAndUpdate(user.id, { password: hashedPass })
+	return "Successfully set password"
+}
 
 //maybe need to add signToken inside
 const createUser = async (obj) => {
@@ -9,7 +59,6 @@ const createUser = async (obj) => {
 	if (username === "" || username.length < 3) {
 		return "Username is a required field, and needs to have at least 3 characters"
 	}
-	// let user = await User.findOne({ username })
 	let user = await User.findOne({ username: new RegExp(`^${username}$`, "i") })
 
 	if (user) {
@@ -159,7 +208,6 @@ const deleteUser = async (id) => {
 		},
 		[]
 	)
-
 	//save
 	await usersFile.setUsers({ users: updatedUsersFileObj })
 	await usersPermissionsFile.setPermissions({
@@ -178,6 +226,7 @@ const todaysDateAsString = () => {
 }
 
 module.exports = {
+	createExistingUser,
 	deleteUser,
 	updateUser,
 	getUserById,

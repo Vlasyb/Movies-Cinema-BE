@@ -14,6 +14,17 @@ router.post("/signuser", async (req, res) => {
 	}
 })
 
+router.post("/register", async (req, res) => {
+	try {
+		const obj = req.body
+		const result = await usersBLL.createExistingUser(obj)
+		res.json(result)
+	} catch (error) {
+		console.log(error)
+		return res.status(500).send(error.message)
+	}
+})
+
 router.get("/", async (req, res) => {
 	try {
 		const users = await usersBLL.getAllUsers()
