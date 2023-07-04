@@ -102,13 +102,6 @@ const updateUser = async (id, obj) => {
 			}
 		}
 	)
-	// {
-	// 	"id": "64a48da8817e9d481feaf15f",
-	// 	"firstName": "Jera",
-	// 	"lastName": "Abu",
-	// 	"createdDate": "05/07/2023",
-	// 	"sessionTimeOut": 10
-	//   }
 
 	//save
 	await usersFile.setUsers({ users: updatedUsersFileObj })
@@ -144,6 +137,37 @@ const getAllUsers = async () => {
 	return usersResult
 }
 
+const deleteUser = async (id) => {
+	await User.findByIdAndDelete(id)
+
+	//find and delete one
+	const usersFileObj = await usersFile.getUsers()
+	const usersPermissionsFileObj = await usersPermissionsFile.getPermissions()
+
+	const updatedUsersFileObj = usersFileObj.users.reduce((acc, user) => {
+		if (user.id !== id) {
+			acc.push(user)
+		}
+		return acc
+	}, [])
+	const updatedUsersPermissionsFileObj = usersPermissionsFileObj.users.reduce(
+		(acc, user) => {
+			if (user.id !== id) {
+				acc.push(user)
+			}
+			return acc
+		},
+		[]
+	)
+
+	//save
+	await usersFile.setUsers({ users: updatedUsersFileObj })
+	await usersPermissionsFile.setPermissions({
+		users: updatedUsersPermissionsFileObj,
+	})
+	return "Deleted User"
+}
+
 const todaysDateAsString = () => {
 	const today = new Date()
 	const day = today.getDate().toString().padStart(2, "0")
@@ -154,6 +178,7 @@ const todaysDateAsString = () => {
 }
 
 module.exports = {
+	deleteUser,
 	updateUser,
 	getUserById,
 	getAllUsers,
