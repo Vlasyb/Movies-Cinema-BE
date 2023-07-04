@@ -1,6 +1,7 @@
 const User = require("../models/userModel")
 const usersFile = require("../DAL/usersFile")
 const usersPermissionsFile = require("../DAL/usersPermissionsFile")
+// require("dotenv").config()
 
 //maybe need to add signToken inside
 const createUser = async (obj) => {
@@ -43,6 +44,80 @@ const createUser = async (obj) => {
 	return "Created"
 }
 
+//can also not do '?' then the field will be null
+const getUserById = async (id) => {
+	const userDB = await User.findOne({ _id: id })
+	const usersFileObj = await usersFile.getUsers()
+	const usersPermissionsFileObj = await usersPermissionsFile.getPermissions()
+
+	const userFile = usersFileObj.users.filter((user) => user.id === userDB.id)[0]
+	console.log(userFile)
+	const userPermFile = usersPermissionsFileObj.users.filter(
+		(user) => user.id === userDB.id
+	)[0]
+
+	const user = {
+		id: userDB.id,
+		username: userDB.username,
+		firstName: userFile.firstName ? userFile.firstName : "",
+		lastName: userFile.lastName ? userFile.lastName : "",
+		sessionTimeOut: userFile.sessionTimeOut ? userFile.sessionTimeOut : 0,
+		createdDate: userFile.createdDate,
+		permissions: userPermFile.permissions ? userPermFile.permissions : [],
+	}
+	return user
+}
+
+const updateUser = async (id, obj) => {
+	await User.findByIdAndUpdate(id, obj)
+
+	//find and change
+	const usersFileObj = await usersFile.getUsers()
+	const usersPermissionsFileObj = await usersPermissionsFile.getPermissions()
+
+	const updatedUsersFileObj = usersFileObj.users.map((user) => {
+		if (user.id == id) {
+			return {
+				id: id,
+				firstName: obj.firstName ? obj.firstName : user.firstName,
+				lastName: obj.lastName ? obj.lastName : user.lastName,
+				sessionTimeOut: obj.sessionTimeOut
+					? obj.sessionTimeOut
+					: user.sessionTimeOut,
+			}
+		} else {
+			return user
+		}
+	})
+	const updatedUsersPermissionsFileObj = usersPermissionsFileObj.users.map(
+		(user) => {
+			if (user.id == id) {
+				return {
+					id: id,
+					permissions: obj.permissions ? obj.permissions : user.permissions,
+				}
+			} else {
+				return user
+			}
+		}
+	)
+	// {
+	// 	"id": "64a48da8817e9d481feaf15f",
+	// 	"firstName": "Jera",
+	// 	"lastName": "Abu",
+	// 	"createdDate": "05/07/2023",
+	// 	"sessionTimeOut": 10
+	//   }
+
+	//save
+	await usersFile.setUsers({ users: updatedUsersFileObj })
+	await usersPermissionsFile.setPermissions({
+		users: updatedUsersPermissionsFileObj,
+	})
+
+	return "Updated"
+}
+
 const getAllUsers = async () => {
 	const usersDB = await User.find({ isAdmin: false })
 	const usersPermissionsObject = await usersPermissionsFile.getPermissions()
@@ -78,6 +153,8 @@ const todaysDateAsString = () => {
 }
 
 module.exports = {
+	updateUser,
+	getUserById,
 	getAllUsers,
 	createUser,
 }
