@@ -2,10 +2,10 @@
   "users": [
     {
       "id": "64a48d8b2de459537822f3f8",
-      "firstName": "faroo",
+      "firstName": "farooqov",
       "lastName": "farooqovich",
       "createdDate": "05/07/2023",
-      "sessionTimeOut": 30
+      "sessionTimeOut": 15
     },
     {
       "id": "64a48da8817e9d481feaf15f",

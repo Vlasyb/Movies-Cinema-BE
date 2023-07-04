@@ -81,6 +81,7 @@ const updateUser = async (id, obj) => {
 				id: id,
 				firstName: obj.firstName ? obj.firstName : user.firstName,
 				lastName: obj.lastName ? obj.lastName : user.lastName,
+				createdDate: user.createdDate,
 				sessionTimeOut: obj.sessionTimeOut
 					? obj.sessionTimeOut
 					: user.sessionTimeOut,
