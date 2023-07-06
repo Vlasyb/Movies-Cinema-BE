@@ -1,1 +1,21 @@
-{"users":[{"id":"64a48d8b2de459537822f3f8","permissions":["view movies","edit movies"]},{"id":"64a48da8817e9d481feaf15f","permissions":[]},{"id":"64a4a5e3f49f58e931ac96ca","permissions":["view movies"]}]}
+{
+  "users": [
+    {
+      "id": "64a48d8b2de459537822f3f8",
+      "permissions": [
+        "view movies",
+        "edit movies"
+      ]
+    },
+    {
+      "id": "64a48da8817e9d481feaf15f",
+      "permissions": []
+    },
+    {
+      "id": "64a4a5e3f49f58e931ac96ca",
+      "permissions": [
+        "view movies"
+      ]
+    }
+  ]
+}

@@ -7,6 +7,7 @@ const subscriptionsRouter = require("./routes/subscriptionsRouter")
 //npm requires
 const cookieparser = require("cookie-parser")
 const express = require("express")
+const cors = require("cors")
 
 const connectDB = require("./configs/DB")
 
@@ -14,7 +15,7 @@ const app = express()
 const port = 8040
 connectDB()
 
-// app.use(cors({ origin: [`http://localhost:3000`], credentials: true }))
+app.use(cors({ origin: [`http://localhost:3000`], credentials: true }))
 app.use(express.json())
 app.use(cookieparser())
 

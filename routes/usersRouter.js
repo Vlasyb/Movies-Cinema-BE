@@ -1,7 +1,12 @@
 const express = require("express")
 const usersBLL = require("../BLL/usersBLL")
+const userMiddleware = require("../middleware/userMiddleware")
 
 const router = express.Router()
+
+router.get("/logout", usersBLL.logout)
+
+router.post("/login", userMiddleware.isAuth, usersBLL.login)
 
 router.post("/signuser", async (req, res) => {
 	try {

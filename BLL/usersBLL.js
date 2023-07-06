@@ -5,17 +5,15 @@ const jwt = require("jsonwebtoken")
 require("dotenv").config()
 const bcrypt = require("bcrypt")
 
-//edit maxAge to sessionTimeOut,json user and req.body.user
 const login = async (req, res) => {
 	//after user is authenticated
-
 	const user = req.body.user
-
+	const expiresIn = user.sessionTimeOut ? `${user.sessionTimeOut}m` : "0m" // Default expiration is 0 minutes
 	const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-		expiresIn: "2h",
+		expiresIn: expiresIn,
 	})
 	res.cookie("token", accessToken, {
-		maxAge: 1800000,
+		maxAge: user.sessionTimeOut ? user.sessionTimeOut * 60000 : 0, //milliseconds , 1 min = 60000 milisecs
 		httpOnly: true,
 	})
 	res.status(200).json({
@@ -226,6 +224,8 @@ const todaysDateAsString = () => {
 }
 
 module.exports = {
+	logout,
+	login,
 	createExistingUser,
 	deleteUser,
 	updateUser,
