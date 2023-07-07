@@ -1,9 +1,10 @@
 const express = require("express")
 const membersBLL = require("../BLL/membersBLL")
+const userMiddleware = require("../middleware/userMiddleware")
 
 const router = express.Router()
 
-router.get("/", async (req, res) => {
+router.get("/", userMiddleware.verifyToken, async (req, res) => {
 	try {
 		const { data: members } = await membersBLL.getAllMembers()
 		res.status(200).json(members)
@@ -13,7 +14,7 @@ router.get("/", async (req, res) => {
 	}
 })
 
-router.get("/member/:id", async (req, res) => {
+router.get("/member/:id", userMiddleware.verifyToken, async (req, res) => {
 	try {
 		const { id } = req.params
 		const { data: member } = await membersBLL.getMemberById(id)
@@ -24,7 +25,7 @@ router.get("/member/:id", async (req, res) => {
 	}
 })
 
-router.post("/", async (req, res) => {
+router.post("/", userMiddleware.verifyToken, async (req, res) => {
 	try {
 		const obj = req.body
 		const { data: result } = await membersBLL.addMember(obj)
@@ -35,7 +36,7 @@ router.post("/", async (req, res) => {
 	}
 })
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", userMiddleware.verifyToken, async (req, res) => {
 	try {
 		const { id } = req.params
 		const obj = req.body
@@ -47,7 +48,7 @@ router.put("/:id", async (req, res) => {
 	}
 })
 //delete member + his subscriptions
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", userMiddleware.verifyToken, async (req, res) => {
 	try {
 		const { id } = req.params
 		const { data: result } = await membersBLL.deleteMember(id)

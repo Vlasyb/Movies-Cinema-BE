@@ -8,16 +8,25 @@ const bcrypt = require("bcrypt")
 const login = async (req, res) => {
 	//after user is authenticated
 	const user = req.body.user
-	const expiresIn = user.sessionTimeOut ? `${user.sessionTimeOut}m` : "0m" // Default expiration is 0 minutes
+	let expiresIn = "2h" //admin gets 2h
+	if (!user.isAdmin) {
+		expiresIn = user.sessionTimeOut ? `${user.sessionTimeOut}m` : "0m" // Default expiration is 0 minutes
+	}
 	const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
 		expiresIn: expiresIn,
 	})
+	let maxAge = 120 * 60000 //admin gets 2h
+	let message = "Successfully logged in as admin"
+	if (!user.isAdmin) {
+		maxAge = user.sessionTimeOut ? user.sessionTimeOut * 60000 : 0 //milliseconds , 1 min = 60000 milisecs
+		message = "successfully logged in"
+	}
 	res.cookie("token", accessToken, {
-		maxAge: user.sessionTimeOut ? user.sessionTimeOut * 60000 : 0, //milliseconds , 1 min = 60000 milisecs
+		maxAge: maxAge,
 		httpOnly: true,
 	})
 	res.status(200).json({
-		message: "successfully logged in",
+		message: message,
 		accessToken: accessToken,
 		user,
 	})
@@ -31,7 +40,6 @@ const logout = async (req, res) => {
 		res.status(200).json({ message: "User logged out successfully" })
 }
 
-//sign password?
 const createExistingUser = async (obj) => {
 	let user = await User.findOne({
 		username: new RegExp(`^${obj.username}$`, "i"),
@@ -51,7 +59,6 @@ const createExistingUser = async (obj) => {
 	return "Successfully set password"
 }
 
-//maybe need to add signToken inside
 const createUser = async (obj) => {
 	const username = obj.username
 	if (username === "" || username.length < 3) {

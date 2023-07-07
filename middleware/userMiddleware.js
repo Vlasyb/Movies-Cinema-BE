@@ -17,8 +17,18 @@ const isAuth = async (req, res, next) => {
 	if (!isPasswordMatch) {
 		return res.status(401).json({ message: "Invalid email or password" })
 	}
-	const fullUser = await usersBLL.getUserById(userDB.id)
-	req.body.user = fullUser //needs to be the full user
+	if (!userDB.isAdmin) {
+		const fullUser = await usersBLL.getUserById(userDB.id)
+		fullUser.password = undefined
+		req.body.user = fullUser //needs to be the full user
+	} else {
+		userDB.password = undefined
+		req.body.user = {
+			id: userDB._id,
+			username: userDB.username,
+			isAdmin: userDB.isAdmin,
+		}
+	}
 	next()
 }
 
@@ -34,11 +44,28 @@ const verifyToken = async (req, res, next) => {
 		next()
 	})
 }
+//only used after verifyToken (which puts user into req)
+const isAdmin = async (req, res, next) => {
+	const { user } = req
+	try {
+		if (!user) {
+			return res.status(401).json({ message: "Unauthorized" })
+		}
+		if (user.isAdmin) {
+			next()
+			return
+		}
+		return res
+			.status(401)
+			.json({ message: "only Admin can access this information" })
+	} catch (error) {
+		console.log("error ", error)
+		return res.status(500).send("Server error")
+	}
+}
 
 module.exports = {
+	isAdmin,
 	isAuth,
 	verifyToken,
-	// tookAction,
-	// getAllUsers,
-	// doLogout,
 }
