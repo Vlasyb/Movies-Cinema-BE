@@ -1,22 +1,30 @@
 const express = require("express")
 const subscriptionsBLL = require("../BLL/subscriptionsBLL")
 const userMiddleware = require("../middleware/userMiddleware")
+const permsMiddleware = require("../middleware/permsMiddleware")
 
 const router = express.Router()
 
-router.get("/", userMiddleware.verifyToken, async (req, res) => {
-	try {
-		const { data: subscriptions } = await subscriptionsBLL.getAllSubscriptions()
-		res.status(200).json(subscriptions)
-	} catch (error) {
-		console.log("Error occurred in Cinema backend:", error)
-		res.status(500).send("Internal Server Error")
+router.get(
+	"/",
+	userMiddleware.verifyToken,
+	permsMiddleware.viewSubsPerm,
+	async (req, res) => {
+		try {
+			const { data: subscriptions } =
+				await subscriptionsBLL.getAllSubscriptions()
+			res.status(200).json(subscriptions)
+		} catch (error) {
+			console.log("Error occurred in Cinema backend:", error)
+			res.status(500).send("Internal Server Error")
+		}
 	}
-})
+)
 
 router.get(
 	"/subscription/:id",
 	userMiddleware.verifyToken,
+	permsMiddleware.viewSubsPerm,
 	async (req, res) => {
 		try {
 			const { id } = req.params
@@ -34,6 +42,7 @@ router.get(
 router.get(
 	"/subscriptions/:memberId",
 	userMiddleware.verifyToken,
+	permsMiddleware.viewSubsPerm,
 	async (req, res) => {
 		try {
 			const { memberId } = req.params
@@ -50,6 +59,7 @@ router.get(
 router.get(
 	"/membersWatched/:movieId",
 	userMiddleware.verifyToken,
+	permsMiddleware.viewSubsPerm,
 	async (req, res) => {
 		try {
 			const { movieId } = req.params
@@ -66,6 +76,7 @@ router.get(
 router.put(
 	"/subscribe/:movieId",
 	userMiddleware.verifyToken,
+	permsMiddleware.editSubsPerm,
 	async (req, res) => {
 		try {
 			const { movieId } = req.params
