@@ -8,6 +8,8 @@ const router = express.Router()
 //isAdmin is required for all request but logout,login,register
 router.get("/logout", usersBLL.logout)
 
+router.get("/verify", userMiddleware.verifyToken, usersBLL.sendUserDetails)
+
 router.post("/login", userMiddleware.isAuth, usersBLL.login)
 
 router.post(

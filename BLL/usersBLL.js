@@ -32,6 +32,22 @@ const login = async (req, res) => {
 	})
 }
 
+const sendUserDetails = async (req, res) => {
+	try {
+		const userId = req.user.id
+		let user = {}
+		if (req.user.username != "admin") {
+			user = await getUserById(userId)
+		} else {
+			user = await User.findOne({ _id: userId })
+		}
+		res.status(200).send(user)
+	} catch (error) {
+		console.error(error)
+		res.status(500).send(error.message)
+	}
+}
+
 const logout = async (req, res) => {
 	res.cookie("token", "none", {
 		maxAge: 0,
@@ -235,6 +251,7 @@ module.exports = {
 	login,
 	createExistingUser,
 	deleteUser,
+	sendUserDetails,
 	updateUser,
 	getUserById,
 	getAllUsers,
