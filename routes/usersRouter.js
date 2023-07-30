@@ -14,7 +14,7 @@ router.post("/login", userMiddleware.isAuth, usersBLL.login)
 
 router.post(
 	"/signuser",
-	userMiddleware.isAuth,
+	userMiddleware.verifyToken,
 	userMiddleware.isAdmin,
 	async (req, res) => {
 		try {
