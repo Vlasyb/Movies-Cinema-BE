@@ -194,6 +194,7 @@ const getAllUsers = async () => {
 		)
 
 		const combinedUser = {
+			id: user._id,
 			username: user.username,
 			firstName: fileUser.firstName,
 			lastName: fileUser.lastName,
