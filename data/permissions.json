@@ -3,18 +3,21 @@
     {
       "id": "64a48d8b2de459537822f3f8",
       "permissions": [
-        "view movies",
-        "edit movies",
-        "view subscriptions"
       ]
     },
     {
       "id": "64a48da8817e9d481feaf15f",
-      "permissions": []
+      "permissions": ["view subscriptions","update subscription","delete subscription", "create subscription","view movies"]
     },
     {
       "id": "64a4a5e3f49f58e931ac96ca",
       "permissions": []
+    },
+    {
+      "id": "64c723e7df2a49453713b564",
+      "permissions": [
+       
+      ]
     }
   ]
 }

@@ -59,7 +59,7 @@ const logout = async (req, res) => {
 const createExistingUser = async (obj) => {
 	let user = await User.findOne({
 		username: new RegExp(`^${obj.username}$`, "i"),
-	})
+	}).select("+password")
 	if (obj.username === "" || obj.username == null) {
 		return "Username is a required field"
 	}
@@ -69,6 +69,11 @@ const createExistingUser = async (obj) => {
 	if (!user) {
 		return `No username matching ${obj.username} , ask admin for sign`
 	}
+
+	if (user.password) {
+		return "Password already exists for this user"
+	}
+
 	const hashedPass = await bcrypt.hash(obj.password, 10)
 
 	await User.findByIdAndUpdate(user.id, { password: hashedPass })
