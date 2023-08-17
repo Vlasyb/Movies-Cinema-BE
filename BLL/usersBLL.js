@@ -144,6 +144,11 @@ const getUserById = async (id) => {
 }
 
 const updateUser = async (id, obj) => {
+	const user = await User.findOne({ username: obj.username })
+	console.log("abbbbbbbbbbbbbbbbbbb : ", user)
+	if (user) {
+		return "This Username Already Exists"
+	}
 	await User.findByIdAndUpdate(id, obj)
 
 	//find and change
