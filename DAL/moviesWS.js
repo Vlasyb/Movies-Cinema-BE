@@ -22,6 +22,10 @@ const getNonWatchedMoviesForMember = (memberId) => {
 	return axios.get(`${url}/nonWatchedMovies/${memberId}`)
 }
 
+const getPaginatedMovies = (page, limit) => {
+	return axios.get(`${url}/getpaginatedmovies/${page}/${limit}`)
+}
+
 const addMovie = (obj) => {
 	return axios.post(url, obj)
 }
@@ -33,6 +37,7 @@ const deleteMovie = (id) => {
 }
 
 module.exports = {
+	getPaginatedMovies,
 	getMovieById,
 	getAllMovies,
 	addMovie,

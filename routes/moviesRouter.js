@@ -21,6 +21,22 @@ router.get(
 )
 
 router.get(
+	"/paginatedMovies/:page/:limit",
+	userMiddleware.verifyToken,
+	permsMiddleware.viewMoviesPerm,
+	async (req, res) => {
+		try {
+			const { page, limit } = req.params
+			const { data: movies } = await moviesBLL.paginatedMovies(page, limit)
+			res.status(200).json(movies)
+		} catch (error) {
+			console.log("Error occurred in Cinema backend:", error)
+			res.status(500).send("Internal Server Error")
+		}
+	}
+)
+
+router.get(
 	"/movie/:id",
 	userMiddleware.verifyToken,
 	permsMiddleware.viewMoviesPerm,

@@ -32,7 +32,13 @@ const deleteMovie = async (id) => {
 	return result
 }
 
+const paginatedMovies = async (page, limit) => {
+	const paginatedMovies = await moviesWS.getPaginatedMovies(page, limit)
+	return paginatedMovies
+}
+
 module.exports = {
+	paginatedMovies,
 	deleteMovie,
 	getMoviesByPhrase,
 	getNonWatchedMoviesForMember,
